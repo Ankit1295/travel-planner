@@ -1,0 +1,173 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f7f6;
+    color: #26332f;
+}
+
+header {
+    background: #16856b;
+    color: white;
+    text-align: center;
+    padding: 30px 20px;
+}
+
+header h1 {
+    margin-bottom: 10px;
+}
+
+main {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.trip-form,
+.trip-list {
+    background: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px #00000010;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccd5d1;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+button {
+    background: #16856b;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #106b55;
+}
+
+#trips {
+    line-height: 1.8;
+}
+
+
+
+.trip-card {
+    padding: 20px;
+    margin-top: 15px;
+    background: #f8fbfa;
+    border: 1px solid #dce7e2;
+    border-radius: 10px;
+}
+
+.trip-card h3 {
+    margin-bottom: 10px;
+    color: #16856b;
+}
+
+.trip-card p {
+    margin-bottom: 15px;
+}
+
+.delete-button {
+    background: #dc3545;
+    font-size: 14px;
+    padding: 8px 14px;
+}
+
+.delete-button:hover {
+    background: #b02a37;
+}
+
+
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0;
+    list-style: none;
+}
+
+.activity-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.activity-item span {
+    flex: 1;
+}
+
+.delete-activity {
+    background: #dc3545;
+    padding: 4px 10px;
+    font-size: 18px;
+}
+
+.map-section {
+    background: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px #00000010;
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+    border-radius: 10px;
+}
+
+
+#searchMap {
+    margin-bottom: 15px;
+}
+
+#mapSearch {
+    margin-top: 10px;
+}
+
+
+.expense-section {
+    background: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px #00000010;
+}
+
+.expense-section h3 {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    color: #16856b;
+}
+
+#expenseList {
+    margin-left: 20px;
+}
+
+#expenseList li {
+    margin-bottom: 10px;
+}
+
