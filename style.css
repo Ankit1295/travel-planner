@@ -7,13 +7,13 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: #f4f7f6;
-    color: #26332f;
+    background: #101820;
+    color: #f1f5f9;
 }
 
 header {
-    background: #16856b;
-    color: white;
+    background: #17232f;
+    color: #ffffff;
     text-align: center;
     padding: 30px 20px;
 }
@@ -23,22 +23,46 @@ header h1 {
 }
 
 main {
-    max-width: 900px;
+    max-width: 1100px;
     margin: 30px auto;
     padding: 0 20px;
 }
 
 .trip-form,
-.trip-list {
-    background: white;
+.trip-list,
+.map-section,
+.expense-section,
+.explore-section {
+    background: #1b2836;
+    color: #ffffff;
     padding: 25px;
     margin-bottom: 25px;
-    border-radius: 12px;
-    box-shadow: 0 3px 12px #00000010;
+    border: 1px solid #334155;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px #00000030;
+    transition: box-shadow 0.25s ease;
+}
+
+.trip-form:hover,
+.trip-list:hover,
+.map-section:hover,
+.expense-section:hover,
+.explore-section:hover {
+    box-shadow: 0 12px 30px #00000050;
 }
 
 h2 {
+    color: #ffffff;
+    font-size: 24px;
+    letter-spacing: 0.3px;
     margin-bottom: 20px;
+}
+
+h3,
+h4,
+p,
+label {
+    color: #ffffff;
 }
 
 input {
@@ -46,59 +70,75 @@ input {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
-    border: 1px solid #ccd5d1;
-    border-radius: 6px;
+    background: #243447;
+    color: #ffffff;
+    border: 1px solid #475569;
+    border-radius: 8px;
     font-size: 16px;
+}
+
+input::placeholder {
+    color: #b0bdcc;
 }
 
 button {
     background: #16856b;
-    color: white;
+    color: #ffffff;
     padding: 12px 20px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 button:hover {
     background: #106b55;
+    transform: translateY(-2px);
+    opacity: 0.9;
 }
 
 #trips {
     line-height: 1.8;
 }
 
-
-
 .trip-card {
-    padding: 20px;
-    margin-top: 15px;
-    background: #f8fbfa;
-    border: 1px solid #dce7e2;
-    border-radius: 10px;
+    padding: 24px;
+    margin-top: 20px;
+    background: #243447;
+    color: #ffffff;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    transition: transform 0.25s ease;
+}
+
+.trip-card:hover {
+    transform: translateY(-3px);
 }
 
 .trip-card h3 {
     margin-bottom: 10px;
-    color: #16856b;
+    color: #5eead4;
 }
 
 .trip-card p {
     margin-bottom: 15px;
 }
 
-.delete-button {
+.delete-button,
+.delete-activity {
     background: #dc3545;
-    font-size: 14px;
-    padding: 8px 14px;
 }
 
-.delete-button:hover {
+.delete-button:hover,
+.delete-activity:hover {
     background: #b02a37;
 }
 
-
+.delete-button {
+    font-size: 14px;
+    padding: 8px 14px;
+}
 
 .activity-item {
     display: flex;
@@ -120,17 +160,8 @@ button:hover {
 }
 
 .delete-activity {
-    background: #dc3545;
     padding: 4px 10px;
     font-size: 18px;
-}
-
-.map-section {
-    background: white;
-    padding: 25px;
-    margin-bottom: 25px;
-    border-radius: 12px;
-    box-shadow: 0 3px 12px #00000010;
 }
 
 #map {
@@ -138,7 +169,6 @@ button:hover {
     width: 100%;
     border-radius: 10px;
 }
-
 
 #searchMap {
     margin-bottom: 15px;
@@ -148,19 +178,9 @@ button:hover {
     margin-top: 10px;
 }
 
-
-.expense-section {
-    background: white;
-    padding: 25px;
-    margin-bottom: 25px;
-    border-radius: 12px;
-    box-shadow: 0 3px 12px #00000010;
-}
-
 .expense-section h3 {
     margin-top: 20px;
     margin-bottom: 15px;
-    color: #16856b;
 }
 
 #expenseList {
@@ -170,4 +190,473 @@ button:hover {
 #expenseList li {
     margin-bottom: 10px;
 }
+
+/* Destination layout: always two cards per row */
+.destination-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 20px;
+    width: 100%;
+}
+
+.destination-card {
+    min-width: 0;
+    background: #243447;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.25s ease;
+}
+
+.destination-card:hover {
+    transform: translateY(-5px);
+}
+
+.destination-card img {
+    display: block;
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.destination-card h3 {
+    padding: 10px 14px;
+}
+
+.destination-card p {
+    padding: 0 14px 14px;
+    line-height: 1.5;
+}
+
+/* Keep two columns on mobile too */
+@media (max-width: 500px) {
+    main {
+        padding: 0 10px;
+    }
+
+    .destination-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px;
+    }
+
+    .destination-card img {
+        height: 120px;
+    }
+
+    .destination-card h3 {
+        font-size: 15px;
+    }
+
+    .destination-card p {
+        font-size: 12px;
+    }
+
+    .trip-form,
+    .trip-list,
+    .map-section,
+    .expense-section,
+    .explore-section {
+        padding: 15px;
+    }
+}
+
+.clickable-destination {
+    cursor: pointer;
+}
+
+.destination-card {
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.destination-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.clickable-destination:hover {
+    color: #38bdf8;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: #243447;
+    color: white;
+    padding: 30px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+    animation: popupShow 0.3s ease;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 18px;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.modal-content button {
+    background: #38bdf8;
+    color: #101820;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+@keyframes popupShow {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#modal-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin: 15px 0;
+}
+
+input[type="date"] {
+    cursor: text;
+}
+
+
+/* Animated Travel Planner Header */
+
+header {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: 80px 20px;
+    text-align: center;
+    border-radius: 0 0 24px 24px;
+    background: #102a43;
+    color: white;
+}
+
+header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image: url("https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1800&q=85");
+    background-size: cover;
+    background-position: center 50%;
+    animation: travelBackground 20s ease-in-out infinite alternate;
+}
+
+header::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+        120deg,
+        rgba(8, 25, 45, 0.82),
+        rgba(8, 45, 65, 0.45),
+        rgba(8, 25, 45, 0.75)
+    );
+}
+
+header h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    margin-bottom: 15px;
+    color: #ffffff;
+    text-shadow: 0 3px 15px rgba(0, 0, 0, 0.4);
+    animation: titleAppear 1s ease-out both;
+}
+
+header p {
+    font-size: 18px;
+    color: #e0f2fe;
+    animation: titleAppear 1.3s ease-out both;
+}
+
+@keyframes travelBackground {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.12);
+    }
+}
+
+@keyframes titleAppear {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    header::before,
+    header h1,
+    header p {
+        animation: none;
+    }
+}
+
+
+/* Modern Travel Planner Sections */
+
+.trip-form,
+.trip-list,
+.map-section,
+.expense-section,
+.explore-section {
+    background: rgba(30, 41, 59, 0.78);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 20px;
+    padding: 28px;
+    margin: 28px auto;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(10px);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.trip-form:hover,
+.trip-list:hover,
+.map-section:hover,
+.expense-section:hover,
+.explore-section:hover {
+    border-color: rgba(56, 189, 248, 0.45);
+    box-shadow: 0 16px 35px rgba(0, 0, 0, 0.25);
+}
+
+.trip-form h2,
+.trip-list h2,
+.map-section h2,
+.expense-section h2,
+.explore-section h2 {
+    color: #7dd3fc;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.trip-form input,
+.map-section input,
+.trip-card input {
+    background: #111c2c;
+    color: #f1f5f9;
+    border: 1px solid #475569;
+    border-radius: 10px;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.trip-form input:focus,
+.map-section input:focus,
+.trip-card input:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+    padding: 11px 18px;
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    color: #082f49;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(56, 189, 248, 0.22);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.trip-card {
+    background: linear-gradient(
+        145deg,
+        rgba(51, 65, 85, 0.95),
+        rgba(30, 41, 59, 0.95)
+    );
+    border: 1px solid #475569;
+    border-radius: 16px;
+    padding: 22px;
+    margin: 20px 0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.trip-card:hover {
+    transform: translateY(-3px);
+    border-color: #38bdf8;
+}
+
+.trip-card h3 {
+    color: #7dd3fc;
+    font-size: 22px;
+    margin-bottom: 12px;
+}
+
+.trip-card h4 {
+    margin-bottom: 12px;
+}
+
+.trip-card p {
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+input::placeholder {
+    color: #94a3b8;
+}
+
+@media (max-width: 600px) {
+    .trip-form,
+    .trip-list,
+    .map-section,
+    .expense-section,
+    .explore-section {
+        padding: 18px;
+        margin: 18px 10px;
+        border-radius: 15px;
+    }
+
+    .trip-form h2,
+    .trip-list h2,
+    .map-section h2,
+    .expense-section h2,
+    .explore-section h2 {
+        font-size: 21px;
+    }
+}
+
+
+/* Full-page scenic background */
+
+body {
+    position: relative;
+    isolation: isolate;
+    background: #101820;
+}
+
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+
+    background-image:
+        linear-gradient(
+            rgba(8, 18, 32, 0.65),
+            rgba(8, 18, 32, 0.75)
+        ),
+        url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=85");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    pointer-events: none;
+}
+
+
+
+/* SubhYatra Branding */
+
+header .site-title {
+    font-size: clamp(42px, 6vw, 68px);
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    letter-spacing: 1px;
+}
+
+header .site-subtitle {
+    font-size: 18px;
+    font-weight: 400;
+    color: #e0f2fe;
+    margin-top: 0;
+    letter-spacing: 2px;
+}
+
+
+header .site-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+header .site-title {
+    text-shadow: 0 0 15px rgba(125, 211, 252, 0.45);
+    animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+    from {
+        text-shadow: 0 0 10px rgba(125, 211, 252, 0.25);
+    }
+    to {
+        text-shadow: 0 0 25px rgba(125, 211, 252, 0.8);
+    }
+}
+
+
+header .hero-tagline {
+    color: #f1f5f9;
+    font-size: 18px;
+    margin: 22px 0;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+header .hero-button {
+    display: inline-block;
+    padding: 13px 26px;
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 30px;
+    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.35);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+header .hero-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(14, 165, 233, 0.55);
+}
+
+header .hero-button span {
+    margin-left: 8px;
+}
+
+
+
 

@@ -1,62 +1,101 @@
 
 const tripNameInput = document.getElementById("tripName");
 const destinationInput = document.getElementById("destination");
+const startDateInput = document.getElementById("startDate");
+const endDateInput = document.getElementById("endDate");
 const createTripButton = document.getElementById("createTrip");
 const tripsContainer = document.getElementById("trips");
+const grandTotalDisplay = document.getElementById("grandTotal");
 
 let trips = [];
 let grandTotal = 0;
-const grandTotalDisplay = document.getElementById("grandTotal");
 
 function updateGrandTotal() {
     grandTotalDisplay.textContent = grandTotal.toFixed(2);
 }
+
+function formatDate(date) {
+    if (!date) return "Not set";
+
+    const parts = date.split("-");
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+}
+
+// CREATE TRIP
 createTripButton.addEventListener("click", function () {
     const tripName = tripNameInput.value.trim();
     const destination = destinationInput.value.trim();
+    const startDate = startDateInput.value;
+    const endDate = endDateInput.value;
 
-    if (tripName === "" || destination === "") {
+    if (!tripName || !destination) {
         alert("Please enter both trip name and destination!");
         return;
     }
 
+    if (startDate && endDate && endDate < startDate) {
+        alert("End date cannot be before the start date!");
+        return;
+    }
+
+    const trip = {
+        id: Date.now().toString() + Math.random().toString(16).slice(2),
+        tripName,
+        destination,
+        startDate,
+        endDate
+    };
+
+    trips.push(trip);
+    localStorage.setItem("savedTrips", JSON.stringify(trips));
+
+    renderTrip(trip);
+
+    tripNameInput.value = "";
+    destinationInput.value = "";
+    startDateInput.value = "";
+    endDateInput.value = "";
+});
+
+// DISPLAY A TRIP
+function renderTrip(trip) {
     const tripCard = document.createElement("div");
-    const tripExpenseStorageKey =
-    `tripExpenses_${tripName}_${destination}`;
-    let thisTripExpenses = JSON.parse(
-    localStorage.getItem(tripExpenseStorageKey) || "[]"
-);
     tripCard.className = "trip-card";
 
     const title = document.createElement("h3");
-    title.textContent = "✈️ " + tripName;
+    title.textContent = "✈️ " + trip.tripName;
 
     const place = document.createElement("p");
-    place.textContent = "📍 " + destination;
+    place.textContent = "📍 " + trip.destination;
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete Trip";
-    deleteButton.className = "delete-button";
 
-    deleteButton.addEventListener("click", function () {
-        grandTotal -= thisTripTotal;
-updateGrandTotal();
-        tripCard.remove();
-        trips = trips.filter(trip =>
-    !(trip.tripName === tripName && trip.destination === destination)
-);
+    const dates = document.createElement("p");
 
-localStorage.setItem("savedTrips", JSON.stringify(trips));
+    let durationText = "";
 
-        if (tripsContainer.children.length === 0) {
-            tripsContainer.innerHTML =
-                "<p>No trips yet. Create your first trip!</p>";
-        }
-    });
+    if (trip.startDate && trip.endDate) {
+        const start = trip.startDate.split("-").map(Number);
+        const end = trip.endDate.split("-").map(Number);
 
-    
+        const startTime = Date.UTC(start[0], start[1] - 1, start[2]);
+        const endTime = Date.UTC(end[0], end[1] - 1, end[2]);
+
+        const days = Math.round(
+            (endTime - startTime) / (1000 * 60 * 60 * 24)
+        ) + 1;
+
+        durationText = ` | ⏳ ${days} day${days === 1 ? "" : "s"}`;
+    }
+
+    dates.textContent =
+        `📅 Start: ${formatDate(trip.startDate)} | End: ${formatDate(trip.endDate)}${durationText}`;
+
+
     const itineraryTitle = document.createElement("h4");
-    itineraryTitle.textContent = "My Itinerary";
+    itineraryTitle.textContent = "Trip Activities";
+    itineraryTitle.style.fontWeight = "bold";
+    itineraryTitle.style.color = "#38bdf8";
+    itineraryTitle.style.fontSize = "18px";
     itineraryTitle.style.marginTop = "20px";
 
     const activityInput = document.createElement("input");
@@ -68,182 +107,275 @@ localStorage.setItem("savedTrips", JSON.stringify(trips));
     addActivityButton.style.marginLeft = "8px";
 
     const activityList = document.createElement("ul");
-    const expenseTitle = document.createElement("h4");
-expenseTitle.textContent = "Trip Expenses";
 
-const expenseName = document.createElement("input");
-expenseName.placeholder = "Expense name (e.g. Hotel)";
+    const progressText = document.createElement("p");
+    progressText.textContent = "Trip Activities Progress: 0%";
 
-const expenseAmount = document.createElement("input");
-expenseAmount.type = "number";
-expenseAmount.placeholder = "Amount in ₹";
+    const progressBar = document.createElement("progress");
+    progressBar.value = 0;
+    progressBar.max = 100;
+    progressBar.style.width = "100%";
+    progressBar.style.margin = "10px 0 15px";
 
-const addExpenseButton = document.createElement("button");
-addExpenseButton.textContent = "Add Expense";
+    function updateProgress() {
+        const activities = activityList.querySelectorAll(
+            ".activity-item input[type='checkbox']"
+        );
 
-const tripExpenseTotal = document.createElement("p");
-tripExpenseTotal.textContent = "Trip Total: ₹0.00";
+        const completed = activityList.querySelectorAll(
+            ".activity-item input[type='checkbox']:checked"
+        );
 
-const tripExpenseList = document.createElement("ul");
-let thisTripTotal = 0;
-    activityList.style.margin = "15px 0 15px 20px";
+        const percentage = activities.length
+            ? Math.round((completed.length / activities.length) * 100)
+            : 0;
 
-    addExpenseButton.addEventListener("click", function () {
-    const name = expenseName.value.trim();
-    const amount = Number(expenseAmount.value);
-
-    if (name === "" || expenseAmount.value === "" ||
-        !Number.isFinite(amount) || amount <= 0) {
-        alert("Enter a valid expense name and amount!");
-        return;
+        progressBar.value = percentage;
+        progressText.textContent = `Itinerary Progress: ${percentage}%`;
     }
 
-    const expenseItem = document.createElement("li");
-    const expenseText = document.createElement("span");
-    expenseText.textContent = `${name} — ₹${amount.toFixed(2)}`;
+    activityList.style.margin = "15px 0 15px 20px";
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete";
-    deleteButton.style.marginLeft = "10px";
+    // ADD ACTIVITY
+    addActivityButton.addEventListener("click", function () {
+        const activity = activityInput.value.trim();
 
-    deleteButton.addEventListener("click", function () {
-        thisTripTotal -= amount;
-        grandTotal -= amount;
+        if (!activity) {
+            alert("Please enter an activity!");
+            return;
+        }
 
-        tripExpenseTotal.textContent =
-            `Trip Total: ₹${thisTripTotal.toFixed(2)}`;
+        const activityItem = document.createElement("li");
+        activityItem.className = "activity-item";
 
-        updateGrandTotal();
-        expenseItem.remove();
-        thisTripExpenses = thisTripExpenses.filter(
-    expense => !(expense.name === name && expense.amount === amount)
-);
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
 
-localStorage.setItem(
-    tripExpenseStorageKey,
-    JSON.stringify(thisTripExpenses)
-);
+        const activityText = document.createElement("span");
+        activityText.textContent = activity;
+
+
+        checkbox.addEventListener("change", function () {
+            activityText.style.textDecoration =
+                checkbox.checked ? "line-through" : "none";
+
+            updateProgress();
+        });
+
+
+        const deleteActivityButton = document.createElement("button");
+        deleteActivityButton.textContent = "×";
+        deleteActivityButton.className = "delete-activity";
+
+        deleteActivityButton.addEventListener("click", function () {
+            activityItem.remove();
+        });
+
+        activityItem.append(
+            checkbox,
+            activityText,
+            deleteActivityButton
+        );
+
+        activityList.appendChild(activityItem);
+        updateProgress();
+        activityInput.value = "";
     });
 
-    expenseItem.append(expenseText, deleteButton);
-    tripExpenseList.appendChild(expenseItem);
-    thisTripExpenses.push({ name, amount });
+    // EXPENSE SECTION
+    const expenseTitle = document.createElement("h4");
+    expenseTitle.textContent = "Trip Expenses";
 
-localStorage.setItem(
-    tripExpenseStorageKey,
-    JSON.stringify(thisTripExpenses)
-);
+    const expenseName = document.createElement("input");
+    expenseName.placeholder = "Expense name (e.g. Hotel)";
 
-    thisTripTotal += amount;
-    grandTotal += amount;
+    const expenseAmount = document.createElement("input");
+    expenseAmount.type = "number";
+    expenseAmount.placeholder = "Amount in ₹";
+
+    const addExpenseButton = document.createElement("button");
+    addExpenseButton.textContent = "Add Expense";
+
+    const tripExpenseTotal = document.createElement("p");
+    tripExpenseTotal.textContent = "Trip Total: ₹0.00";
+
+    const tripExpenseList = document.createElement("ul");
+
+    let thisTripTotal = 0;
+
+    const tripExpenseStorageKey =
+        `tripExpenses_${trip.tripName}_${trip.destination}`;
+
+    let thisTripExpenses = JSON.parse(
+        localStorage.getItem(tripExpenseStorageKey) || "[]"
+    );
+
+    // DISPLAY AN EXPENSE
+    function renderExpense(expense) {
+        const expenseItem = document.createElement("li");
+
+        const expenseText = document.createElement("span");
+        expenseText.textContent =
+            `${expense.name} — ₹${Number(expense.amount).toFixed(2)}`;
+
+        const deleteExpenseButton = document.createElement("button");
+        deleteExpenseButton.textContent = "Delete";
+        deleteExpenseButton.style.marginLeft = "10px";
+
+        deleteExpenseButton.addEventListener("click", function () {
+            thisTripTotal -= Number(expense.amount);
+            grandTotal -= Number(expense.amount);
+
+            thisTripTotal = Math.max(0, thisTripTotal);
+            grandTotal = Math.max(0, grandTotal);
+
+            tripExpenseTotal.textContent =
+                `Trip Total: ₹${thisTripTotal.toFixed(2)}`;
+
+            updateGrandTotal();
+            expenseItem.remove();
+
+            const index = thisTripExpenses.indexOf(expense);
+
+            if (index !== -1) {
+                thisTripExpenses.splice(index, 1);
+            }
+
+            localStorage.setItem(
+                tripExpenseStorageKey,
+                JSON.stringify(thisTripExpenses)
+            );
+        });
+
+        expenseItem.append(expenseText, deleteExpenseButton);
+        tripExpenseList.appendChild(expenseItem);
+
+        thisTripTotal += Number(expense.amount);
+        grandTotal += Number(expense.amount);
+    }
+
+    // RESTORE SAVED EXPENSES
+    thisTripExpenses.forEach(function (expense) {
+        renderExpense(expense);
+    });
 
     tripExpenseTotal.textContent =
         `Trip Total: ₹${thisTripTotal.toFixed(2)}`;
 
     updateGrandTotal();
 
-    expenseName.value = "";
-    expenseAmount.value = "";
-});
+    // ADD EXPENSE
+    addExpenseButton.addEventListener("click", function () {
+        const name = expenseName.value.trim();
+        const amount = Number(expenseAmount.value);
 
-    addActivityButton.addEventListener("click", function () {
-        const activity = activityInput.value.trim();
-
-        if (activity === "") {
-            alert("Please enter an activity!");
+        if (
+            !name ||
+            expenseAmount.value === "" ||
+            !Number.isFinite(amount) ||
+            amount <= 0
+        ) {
+            alert("Enter a valid expense name and amount!");
             return;
         }
 
-        
-const activityItem = document.createElement("li");
-activityItem.className = "activity-item";
+        const expense = { name, amount };
 
-const checkbox = document.createElement("input");
-checkbox.type = "checkbox";
+        thisTripExpenses.push(expense);
 
-const activityText = document.createElement("span");
-activityText.textContent = activity;
+        localStorage.setItem(
+            tripExpenseStorageKey,
+            JSON.stringify(thisTripExpenses)
+        );
 
-checkbox.addEventListener("change", function () {
-    activityText.style.textDecoration =
-        checkbox.checked ? "line-through" : "none";
-});
+        renderExpense(expense);
 
-const deleteActivityButton = document.createElement("button");
-deleteActivityButton.textContent = "×";
-deleteActivityButton.className = "delete-activity";
+        tripExpenseTotal.textContent =
+            `Trip Total: ₹${thisTripTotal.toFixed(2)}`;
 
-deleteActivityButton.addEventListener("click", function () {
-    activityItem.remove();
-});
+        updateGrandTotal();
 
-activityItem.append(
-    checkbox,
-    activityText,
-    deleteActivityButton
-);
-
-activityList.appendChild(activityItem);
-
-
-        activityInput.value = "";
+        expenseName.value = "";
+        expenseAmount.value = "";
     });
 
-  tripCard.append(
-    title,
-    place,
-    itineraryTitle,
-    activityInput,
-    addActivityButton,
-    activityList,
-    expenseTitle,
-    expenseName,
-    expenseAmount,
-    addExpenseButton,
-    tripExpenseTotal,
-    tripExpenseList,
-    deleteButton
-);
+    // DELETE TRIP
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete Trip";
+    deleteButton.className = "delete-button";
 
+    deleteButton.addEventListener("click", function () {
+        grandTotal -= thisTripTotal;
+        grandTotal = Math.max(0, grandTotal);
+        updateGrandTotal();
 
-    if (tripsContainer.textContent.includes("No trips yet.")) {
-    tripsContainer.innerHTML = "";
-}
+        tripCard.remove();
+
+        trips = trips.filter(function (savedTrip) {
+            return savedTrip.id !== trip.id;
+        });
+
+        localStorage.setItem("savedTrips", JSON.stringify(trips));
+
+        if (tripsContainer.children.length === 0) {
+            tripsContainer.innerHTML =
+                "<p>No trips yet. Create your first trip!</p>";
+        }
+    });
+
+    tripCard.append(
+        title,
+        place,
+        dates,
+        itineraryTitle,
+        progressText,
+        progressBar,
+        activityInput,
+        addActivityButton,
+        activityList,
+        expenseTitle,
+        expenseName,
+        expenseAmount,
+        addExpenseButton,
+        tripExpenseTotal,
+        tripExpenseList,
+        deleteButton
+    );
+
+    if (tripsContainer.querySelector("p") &&
+        tripsContainer.children.length === 1 &&
+        tripsContainer.textContent.includes("No trips yet.")) {
+        tripsContainer.innerHTML = "";
+    }
 
     tripsContainer.appendChild(tripCard);
-    trips.push({ tripName, destination });
-localStorage.setItem("savedTrips", JSON.stringify(trips));
+}
 
-    tripNameInput.value = "";
-    destinationInput.value = "";
-});
-
+// MAP
 const map = L.map("map").setView([15.2993, 74.1240], 8);
 
-
 L.tileLayer("https://tile.openstreetmap.de/{z}/{x}/{y}.png", {
-    attribution: '&copy; OpenStreetMap contributors'
+    attribution: "&copy; OpenStreetMap contributors"
 }).addTo(map);
-
 
 L.marker([15.2993, 74.1240])
     .addTo(map)
     .bindPopup("Goa, India")
     .openPopup();
 
-
-
+// MAP SEARCH
 document.getElementById("searchMap").addEventListener("click", async function () {
     const place = document.getElementById("mapSearch").value.trim();
 
-    if (place === "") {
+    if (!place) {
         alert("Please enter a destination!");
         return;
     }
 
     try {
-        const url = "https://nominatim.openstreetmap.org/search?format=json&q="
-            + encodeURIComponent(place);
+        const url =
+            "https://nominatim.openstreetmap.org/search?format=json&q=" +
+            encodeURIComponent(place);
 
         const response = await fetch(url);
         const results = await response.json();
@@ -268,18 +400,89 @@ document.getElementById("searchMap").addEventListener("click", async function ()
     }
 });
 
-
-
-
-
+// RESTORE SAVED TRIPS
 const savedTrips = JSON.parse(
     localStorage.getItem("savedTrips") || "[]"
 );
 
-savedTrips.forEach(function (trip) {
-    tripNameInput.value = trip.tripName;
-    destinationInput.value = trip.destination;
-    createTripButton.click();
+trips = savedTrips.map(function (trip, index) {
+    return {
+        ...trip,
+        id: trip.id || `old-trip-${index}-${Date.now()}`
+    };
 });
 
+localStorage.setItem("savedTrips", JSON.stringify(trips));
 
+if (trips.length > 0) {
+    tripsContainer.innerHTML = "";
+
+    trips.forEach(function (trip) {
+        renderTrip(trip);
+    });
+}
+
+// DESTINATION DETAILS
+function showDestination(place) {
+    const details = {
+        Goa: {
+            description: "Enjoy beautiful beaches, sunsets, water sports and coastal food.",
+            image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80"
+        },
+        Jaipur: {
+            description: "Explore royal palaces, historic forts and colorful markets.",
+            image: "https://images.unsplash.com/photo-1599661046827-dacff0c0f09a?auto=format&fit=crop&w=800&q=80"
+        },
+        Agra: {
+            description: "Visit the world-famous Taj Mahal and explore Mughal history.",
+            image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80"
+        },
+        Manali: {
+            description: "Enjoy snowy mountains, scenic valleys and adventure activities.",
+            image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80"
+        }
+    };
+
+    if (!details[place]) return;
+
+    document.getElementById("modal-title").textContent = place + ", India";
+    document.getElementById("modal-description").textContent =
+        details[place].description;
+    document.getElementById("modal-image").src = details[place].image;
+    document.getElementById("modal-image").alt = place + " photo";
+    document.getElementById("destination-modal").style.display = "flex";
+}
+
+// DESTINATION CARD CLICK
+document.querySelectorAll(".destination-card").forEach(function (card) {
+    card.addEventListener("click", function () {
+        const heading = card.querySelector("h3");
+
+        if (!heading) return;
+
+        const place = heading.textContent.split(",")[0].trim();
+        showDestination(place);
+    });
+});
+
+// CLOSE POPUP
+function closeDestination() {
+    document.getElementById("destination-modal").style.display = "none";
+}
+
+const destinationModal = document.getElementById("destination-modal");
+
+destinationModal.addEventListener("click", function (event) {
+    if (event.target === destinationModal) {
+        closeDestination();
+    }
+});
+
+document.querySelector(".close-modal").addEventListener("click", closeDestination);
+document.getElementById("close-modal-button").addEventListener("click", closeDestination);
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        closeDestination();
+    }
+});

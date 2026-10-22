@@ -1,28 +1,45 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travel Planner</title>
+
+    
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
+
 <body>
 
-    <header>
-        <h1>🌍 Travel Planner</h1>
-        <p>Plan your next adventure!</p>
-    </header>
+    
+
+<header>
+    <h1 class="site-title">SubhYatra</h1>
+    <p class="site-subtitle">A Travel Planner</p>
+    <p class="hero-tagline">Your next adventure starts here.</p>
+    <a href="#explore-destinations" class="hero-button">
+        Explore Destinations <span>→</span>
+    </a>
+</header>
+
+
 
     <main>
+
         <section class="trip-form">
             <h2>Create Your Trip</h2>
+            <input type="text" id="tripName" placeholder="Enter trip name">
+            <input type="text" id="destination" placeholder="Enter destination">
 
-            <input type="text" id="tripName"
-                   placeholder="Enter trip name">
+            <label for="startDate">Trip Start Date</label>
+            <input type="date" id="startDate">
 
-            <input type="text" id="destination"
-                   placeholder="Enter destination">
+            <label for="endDate">Trip End Date</label>
+            <input type="date" id="endDate">
 
             <button id="createTrip">Create Trip</button>
         </section>
@@ -33,31 +50,78 @@
                 <p>No trips yet. Create your first trip!</p>
             </div>
         </section>
+
         <section class="map-section">
-    <h2>Explore Your Destination</h2>
+            <h2>Explore Your Destination</h2>
+            <input type="text" id="mapSearch" placeholder="Search a city or destination">
+            <button id="searchMap">Search Map</button>
+            <div id="map"></div>
+        </section>
 
-    <input type="text" id="mapSearch"
-           placeholder="Search a city or destination">
+        <section class="expense-section">
+            <h2>💰 All Trips Expense Summary</h2>
+            <h3>Grand Total: ₹<span id="grandTotal">0.00</span></h3>
+        </section>
 
-    <button id="searchMap">Search Map</button>
+        <section class="explore-section">
+            <h2>🌍 Explore Destinations</h2>
 
-    <div id="map"></div>
-</section>
+            <div class="destination-grid">
 
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80"
+                        alt="Goa beach">
+                    <h3 class="clickable-destination">Goa, India</h3>
+                    <p>Beaches, sunsets and coastal adventures.</p>
+                </div>
 
-<section class="expense-section">
-    <h2>💰 All Trips Expense Summary</h2>
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1599661046827-dacff0c0f09a?auto=format&fit=crop&w=600&q=80"
+                        alt="Jaipur city">
+                    <h3 class="clickable-destination">Jaipur, India</h3>
+                    <p>Historic forts, palaces and colorful markets.</p>
+                </div>
 
-    <h3>
-        Grand Total: ₹<span id="grandTotal">0.00</span>
-    </h3>
-</section>
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=600&q=80"
+                        alt="Taj Mahal">
+                    <h3 class="clickable-destination">Agra, India</h3>
+                    <p>Discover the iconic Taj Mahal.</p>
+                </div>
+
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=600&q=80"
+                        alt="Manali mountains">
+                    <h3 class="clickable-destination">Manali, India</h3>
+                    <p>Snowy mountains, scenic valleys and adventure.</p>
+                </div>
+
+            </div>
+        </section>
 
     </main>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="script.js"></script>
+    <!-- Destination popup -->
+    <div id="destination-modal" class="modal">
+        <div class="modal-content">
+
+            <span class="close-modal" aria-label="Close popup">&times;</span>
+
+            <h2 id="modal-title"></h2>
+
+            <img id="modal-image" src="" alt="Destination photo">
+
+            <p id="modal-description"></p>
+
+            <button id="close-modal-button">Close</button>
+
+        </div>
+    </div>
+
+    <!-- Load JavaScript AFTER the HTML elements -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
 
 </body>
+
 </html>
