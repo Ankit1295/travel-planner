@@ -491,7 +491,7 @@ document.addEventListener("keydown", function (event) {
 // Supabase connection
 const supabaseUrl = "https://epjwawcwqiufqgrnsdar.supabase.co";
 
-const supabasePublishableKey = "PASTE_YOUR_PUBLISHABLE_KEY_HEREsb_publishable_15L5lUga3A-gxDXEuAwjDw_mxDU-Z6S";
+const supabasePublishableKey = "sb_publishable_15L5lUga3A-gxDXEuAwjDw_mxDU-Z6S";
 
 const supabaseClient = window.supabase.createClient(
     supabaseUrl,
