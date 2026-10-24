@@ -486,3 +486,39 @@ document.addEventListener("keydown", function (event) {
         closeDestination();
     }
 });
+
+
+// Supabase connection
+const supabaseUrl = "https://epjwawcwqiufqgrnsdar.supabase.co";
+
+const supabasePublishableKey = "PASTE_YOUR_PUBLISHABLE_KEY_HEREsb_publishable_15L5lUga3A-gxDXEuAwjDw_mxDU-Z6S";
+
+const supabaseClient = window.supabase.createClient(
+    supabaseUrl,
+    supabasePublishableKey
+);
+
+
+document.getElementById("signup-form").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById("signup-email").value;
+    const password = document.getElementById("signup-password").value;
+    const message = document.getElementById("auth-message");
+
+    message.textContent = "Creating your account...";
+
+    const { data, error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        message.textContent = error.message;
+        return;
+    }
+
+    message.textContent = data.user && data.user.identities?.length === 0
+        ? "An account with this email may already exist."
+        : "Signup successful! Check your email to confirm your account.";
+});
